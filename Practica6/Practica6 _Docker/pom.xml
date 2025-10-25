@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.example</groupId>
-  <artifactId>Practica6V4</artifactId>
+  <artifactId>Practica6_SW</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>Practica6V4 Maven Webapp</name>
+  <name>Practica6_SW Maven Webapp</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -40,7 +40,7 @@
   </dependencies>
 
   <build>
-    <finalName>Practica6V4</finalName>
+    <finalName>Practica6_SW</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
