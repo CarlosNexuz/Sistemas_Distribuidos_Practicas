@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Microservicios</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 20px; background-color: #f0f2f5; }
+        h1 { text-align: center; color: #333; }
+        .container { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; }
+        .service { background: #fff; border: 1px solid #dbe1e8; border-radius: 8px; padding: 20px; width: 30%; min-width: 320px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h2 { border-bottom: 2px solid #007bff; padding-bottom: 5px; color: #007bff; margin-top: 0; }
+        h3 { color: #555; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
+        form { display: flex; flex-direction: column; }
+        input { margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin-top: 5px; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        .id-ops { display: flex; flex-direction: column; gap: 5px; margin-top: 15px; }
+        .id-ops input { margin-bottom: 5px; }
+        .id-ops .btn-group { display: flex; gap: 5px; justify-content: space-between; }
+        .id-ops button { flex: 1; padding: 8px; font-size: 12px; }
+        .btn-get { background-color: #17a2b8; } .btn-get:hover { background-color: #138496; }
+        .btn-update { background-color: #ffc107; color: #212529; } .btn-update:hover { background-color: #e0a800; }
+        .btn-delete { background-color: #dc3545; } .btn-delete:hover { background-color: #c82333; }
+        .btn-list { background-color: #28a745; margin-top: 10px; } .btn-list:hover { background-color: #218838; }
+        pre { background: #e9ecef; color: #495057; padding: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <h1>Panel de Control - Agenda Médica</h1>
+
+    <div class="container">
+
+        <div class="service">
+            <h2>Pacientes</h2>
+            
+            <h3>Crear / Actualizar Paciente</h3>
+            <form id="form-patient">
+                <input type="text" id="patient-name" placeholder="Nombre del Paciente" required>
+                <input type="text" id="patient-dob" placeholder="Fecha Nacimiento (YYYY-MM-DD)">
+                <input type="text" id="patient-history" placeholder="Historial">
+                <button type="submit">Crear Paciente</button>
+            </form>
+            
+            <h3>Operaciones por ID</h3>
+            <div class="id-ops">
+                <input type="number" id="patient-id-ops" placeholder="ID del Paciente">
+                <div class="btn-group">
+                    <button class="btn-get" onclick="getById('patients', 'patient-id-ops')">Buscar</button>
+                    <button class="btn-update" onclick="updateById('patients', 'patient-id-ops')">Actualizar</button>
+                    <button class="btn-delete" onclick="deleteById('patients', 'patient-id-ops')">Eliminar</button>
+                </div>
+            </div>
+            
+            <button class="btn-list" onclick="listar('patients')">Listar Todos los Pacientes</button>
+            <pre id="result-patients">Aquí se mostrarán los resultados...</pre>
+        </div>
+
+        <div class="service">
+            <h2>Doctores</h2>
+            
+            <h3>Crear / Actualizar Doctor</h3>
+            <form id="form-doctor">
+                <input type="text" id="doctor-name" placeholder="Nombre del Doctor" required>
+                <input type="text" id="doctor-specialty" placeholder="Especialidad" required>
+                <input type="text" id="doctor-availability" placeholder="Disponibilidad">
+                <button type="submit">Crear Doctor</button>
+            </form>
+            
+            <h3>Operaciones por ID</h3>
+            <div class="id-ops">
+                <input type="number" id="doctor-id-ops" placeholder="ID del Doctor">
+                <div class="btn-group">
+                    <button class="btn-get" onclick="getById('doctors', 'doctor-id-ops')">Buscar</button>
+                    <button class="btn-update" onclick="updateById('doctors', 'doctor-id-ops')">Actualizar</button>
+                    <button class="btn-delete" onclick="deleteById('doctors', 'doctor-id-ops')">Eliminar</button>
+                </div>
+            </div>
+
+            <button class="btn-list" onclick="listar('doctors')">Listar Todos los Doctores</button>
+            <pre id="result-doctors">Aquí se mostrarán los resultados...</pre>
+        </div>
+
+        <div class="service">
+            <h2>Citas</h2>
+            
+            <h3>Crear / Actualizar Cita</h3>
+            <form id="form-appointment">
+                <input type="number" id="app-patient-id" placeholder="ID Paciente" required>
+                <input type="number" id="app-doctor-id" placeholder="ID Doctor" required>
+                <input type="text" id="app-date" placeholder="Fecha (YYYY-MM-DD)" required>
+                <input type="text" id="app-time" placeholder="Hora (HH:MM)" required>
+                <input type="text" id="app-status" placeholder="Estado (ej: Scheduled)">
+                <button type="submit">Crear Cita</button>
+            </form>
+
+            <h3>Operaciones por ID</h3>
+            <div class="id-ops">
+                <input type="number" id="appointment-id-ops" placeholder="ID de la Cita">
+                <div class="btn-group">
+                    <button class="btn-get" onclick="getById('appointments', 'appointment-id-ops')">Buscar</button>
+                    <button class="btn-update" onclick="updateById('appointments', 'appointment-id-ops')">Actualizar</button>
+                    <button class="btn-delete" onclick="deleteById('appointments', 'appointment-id-ops')">Eliminar</button>
+                </div>
+            </div>
+            
+            <button class="btn-list" onclick="listar('appointments')">Listar Todas las Citas</button>
+            <pre id="result-appointments">Aquí se mostrarán los resultados...</pre>
+        </div>
+    </div>
+
+    <script>
+        // URLs del proxy de Nginx
+        const API_URLS = {
+            patients: '/api/patients/',
+            doctors: '/api/doctors/',
+            appointments: '/api/appointments/'
+        };
+
+        // Función genérica para mostrar resultados
+        function mostrarResultado(service, data) {
+            document.getElementById(`result-${service}`).textContent = JSON.stringify(data, null, 2);
+        }
+
+        // --- Operaciones POST (Crear) ---
+
+        document.getElementById('form-patient').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                name: document.getElementById('patient-name').value,
+                dob: document.getElementById('patient-dob').value,
+                history: document.getElementById('patient-history').value
+            };
+            await postData('patients', body);
+        });
+
+        document.getElementById('form-doctor').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                name: document.getElementById('doctor-name').value,
+                specialty: document.getElementById('doctor-specialty').value,
+                availability: document.getElementById('doctor-availability').value
+            };
+            await postData('doctors', body);
+        });
+
+        document.getElementById('form-appointment').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                patient_id: parseInt(document.getElementById('app-patient-id').value),
+                doctor_id: parseInt(document.getElementById('app-doctor-id').value),
+                date: document.getElementById('app-date').value,
+                time: document.getElementById('app-time').value,
+                status: document.getElementById('app-status').value || 'Scheduled'
+            };
+            await postData('appointments', body);
+        });
+
+        async function postData(service, body) {
+            try {
+                const response = await fetch(API_URLS[service], {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                mostrarResultado(service, data);
+                if(response.ok) listar(service); // Refrescar lista
+            } catch (error) {
+                mostrarResultado(service, { error: error.message });
+            }
+        }
+
+        // --- Operaciones GET (Listar) ---
+
+        async function listar(service) {
+            try {
+                const response = await fetch(API_URLS[service]);
+                const data = await response.json();
+                mostrarResultado(service, data);
+            } catch (error) {
+                mostrarResultado(service, { error: error.message });
+            }
+        }
+
+        // --- Operaciones por ID ---
+
+        // GET (Buscar por ID)
+        async function getById(service, idField) {
+            const id = document.getElementById(idField).value;
+            if (!id) {
+                mostrarResultado(service, { error: 'Por favor, introduce un ID' });
+                return;
+            }
+            try {
+                const response = await fetch(`${API_URLS[service]}${id}`);
+                const data = await response.json();
+                mostrarResultado(service, data);
+            } catch (error) {
+                mostrarResultado(service, { error: error.message });
+            }
+        }
+
+        // DELETE (Eliminar por ID)
+        async function deleteById(service, idField) {
+            const id = document.getElementById(idField).value;
+            if (!id) {
+                mostrarResultado(service, { error: 'Por favor, introduce un ID' });
+                return;
+            }
+            try {
+                const response = await fetch(`${API_URLS[service]}${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.status === 204) {
+                    mostrarResultado(service, { message: `Elemento ${id} eliminado` });
+                    listar(service); // Refrescar lista
+                } else {
+                    const data = await response.json();
+                    mostrarResultado(service, data);
+                }
+            } catch (error) {
+                mostrarResultado(service, { error: error.message });
+            }
+        }
+
+        // PUT (Actualizar por ID)
+        async function updateById(service, idField) {
+            const id = document.getElementById(idField).value;
+            if (!id) {
+                mostrarResultado(service, { error: 'Por favor, introduce un ID' });
+                return;
+            }
+
+            let body;
+            // Recoge los datos del formulario de CREAR para usarlos en la ACTUALIZACIÓN
+            try {
+                if (service === 'patients') {
+                    body = {
+                        name: document.getElementById('patient-name').value,
+                        dob: document.getElementById('patient-dob').value,
+                        history: document.getElementById('patient-history').value
+                    };
+                } else if (service === 'doctors') {
+                    body = {
+                        name: document.getElementById('doctor-name').value,
+                        specialty: document.getElementById('doctor-specialty').value,
+                        availability: document.getElementById('doctor-availability').value
+                    };
+                } else if (service === 'appointments') {
+                    body = {
+                        patient_id: parseInt(document.getElementById('app-patient-id').value),
+                        doctor_id: parseInt(document.getElementById('app-doctor-id').value),
+                        date: document.getElementById('app-date').value,
+                        time: document.getElementById('app-time').value,
+                        status: document.getElementById('app-status').value || undefined
+                    };
+                }
+
+                const response = await fetch(`${API_URLS[service]}${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                mostrarResultado(service, data);
+                if(response.ok) listar(service); // Refrescar lista
+            } catch (error) {
+                mostrarResultado(service, { error: error.message });
+            }
+        }
+
+    </script>
+</body>
+</html>
