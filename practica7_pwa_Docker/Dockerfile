@@ -23,7 +23,7 @@ FROM nginx:stable-alpine
 # Copiar los archivos generados por React al servidor Nginx
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Exponer el puerto 80 para que la app sea accesible
+# Exponer el puerto  para que la app sea accesible
 EXPOSE 8080
 
 # Comando para ejecutar Nginx en modo "foreground"
