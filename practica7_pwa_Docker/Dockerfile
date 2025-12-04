@@ -1,6 +1,7 @@
 # Etapa 1: construir la aplicación
 FROM node:18-alpine AS build
 
+#p1
 # Crear el directorio de la aplicación dentro del contenedor
 WORKDIR /app
 
