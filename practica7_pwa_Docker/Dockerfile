@@ -1,7 +1,6 @@
 # Etapa 1: construir la aplicación
 FROM node:18-alpine AS build
 
-#p1
 # Crear el directorio de la aplicación dentro del contenedor
 WORKDIR /app
 
@@ -23,8 +22,8 @@ FROM nginx:stable-alpine
 # Copiar los archivos generados por React al servidor Nginx
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Exponer el puerto  para que la app sea accesible
-EXPOSE 8080
+# Exponer el puerto 80 para que la app sea accesible
+EXPOSE 80
 
 # Comando para ejecutar Nginx en modo "foreground"
 CMD ["nginx", "-g", "daemon off;"]
