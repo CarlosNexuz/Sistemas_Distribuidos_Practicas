@@ -24,7 +24,7 @@ FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Exponer el puerto 80 para que la app sea accesible
-EXPOSE 80
+EXPOSE 8080
 
 # Comando para ejecutar Nginx en modo "foreground"
 CMD ["nginx", "-g", "daemon off;"]
