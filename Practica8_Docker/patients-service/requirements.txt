@@ -2,3 +2,6 @@ Flask
 Flask-RESTful
 Flask-SQLAlchemy
 SQLAlchemy
+mysqlclient
+gunicorn
+psycopg2-binary

@@ -8,7 +8,13 @@ api = Api(app)
 
 # Configuración de la base de datos SQLite
 # Usa la variable de entorno DATABASE_URL definida en docker-compose.yml
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.environ.get('DATABASE_URL', '/app/data/medical_agenda.db')
+db_url = os.environ.get('DATABASE_URL', 'sqlite:////app/data/medical_agenda.db')
+
+# Pequeño ajuste de compatibilidad por si la URL empieza con "postgres://" (antiguo)
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
