@@ -16,4 +16,5 @@ EXPOSE 5000
 
 # Comando para ejecutar la aplicación cuando el contenedor arranque
 # Usa 0.0.0.0 para que el servidor Flask sea accesible desde fuera del contenedor
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+# CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["python", "app.py"]
