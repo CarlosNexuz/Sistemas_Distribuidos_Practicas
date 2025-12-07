@@ -7,16 +7,26 @@ from datetime import datetime
 app = Flask(__name__)
 api = Api(app)
 
-# Configuración de la base de datos SQLite
-# Usa la variable de entorno DATABASE_URL definida en docker-compose.yml
-db_url = os.environ.get('DATABASE_URL', 'sqlite:////app/data/medical_agenda.db')
+# --- INICIO MODIFICACIÓN CLOUD ---
+# Configuración de la base de datos para Cloud SQL (PostgreSQL)
+db_user = os.environ.get('DB_USER', 'postgres')
+db_password = os.environ.get('DB_PASSWORD', 'password')
+db_name = os.environ.get('DB_NAME', 'medical_agenda')
+# El 'Instance Connection Name' se obtiene de la consola de GCP (ej: project:region:instance)
+db_connection_name = os.environ.get('INSTANCE_CONNECTION_NAME')
 
-# Pequeño ajuste de compatibilidad por si la URL empieza con "postgres://" (antiguo)
-if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+if db_connection_name:
+    # Configuración para Producción en Cloud Run (usando Unix Socket)
+    socket_path = f'/cloudsql/{db_connection_name}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://{db_user}:{db_password}@/{db_name}?host={socket_path}'
+else:
+    # Configuración para Local/Testing (usando TCP)
+    # Si no hay connection name, asume local o docker-compose con host explícito
+    db_host = os.environ.get('DB_HOST', 'localhost')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}/{db_name}'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# --- FIN MODIFICACIÓN CLOUD ---
 
 db = SQLAlchemy(app)
 
@@ -128,4 +138,9 @@ def create_tables():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    
+    # --- INICIO MODIFICACIÓN CLOUD ---
+    # Usar el puerto definido por la variable de entorno PORT (Cloud Run usa 8080 por defecto)
+    port = int(os.environ.get('PORT', 8080))
+    app.run(debug=True, host='0.0.0.0', port=port)
+    # --- FIN MODIFICACIÓN CLOUD ---

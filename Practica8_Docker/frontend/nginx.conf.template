@@ -1,0 +1,28 @@
+server {
+    # Cloud Run espera que escuchemos en el puerto 8080 por defecto
+    listen 8080;
+    server_name localhost;
+
+    # Servir el archivo HTML estático
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # --- Proxy Reverso Dinámico ---
+    # Usamos variables de entorno para las URLs de los microservicios
+
+    location /api/patients/ {
+        # La variable ${PATIENTS_SERVICE_URL} se inyectará al desplegar
+        proxy_pass ${PATIENTS_SERVICE_URL};
+    }
+
+    location /api/doctors/ {
+        proxy_pass ${DOCTORS_SERVICE_URL};
+    }
+
+    location /api/appointments/ {
+        proxy_pass ${APPOINTMENTS_SERVICE_URL};
+    }
+}
