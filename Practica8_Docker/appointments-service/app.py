@@ -10,10 +10,10 @@ api = Api(app)
 # --- INICIO MODIFICACIÓN CLOUD ---
 # Configuración de la base de datos para Cloud SQL (PostgreSQL)
 db_user = os.environ.get('DB_USER', 'postgres')
-db_password = os.environ.get('DB_PASSWORD', 'password')
+db_password = os.environ.get('DB_PASSWORD', 'Hola2626#')
 db_name = os.environ.get('DB_NAME', 'medical_agenda')
 # El 'Instance Connection Name' se obtiene de la consola de GCP (ej: project:region:instance)
-db_connection_name = os.environ.get('INSTANCE_CONNECTION_NAME')
+db_connection_name = os.environ.get('microservicios-480304:northamerica-south1:medical-db-instance')
 
 if db_connection_name:
     # Configuración para Producción en Cloud Run (usando Unix Socket)
