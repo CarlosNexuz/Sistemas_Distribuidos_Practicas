@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expone el puerto que usará Flask
-EXPOSE 5000
+EXPOSE 8080
 
 # Comando para ejecutar la aplicación cuando el contenedor arranque
 # Usa 0.0.0.0 para que el servidor Flask sea accesible desde fuera del contenedor
