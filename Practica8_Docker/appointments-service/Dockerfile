@@ -11,10 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el resto del código de la aplicación
 COPY . .
 
-# Expone el puerto que usará Flask
-EXPOSE 5000
+# Expone el puerto que usará Flask (8080 es el estándar de Cloud Run)
+EXPOSE 8080
 
-# Comando para ejecutar la aplicación cuando el contenedor arranque
-# Usa 0.0.0.0 para que el servidor Flask sea accesible desde fuera del contenedor
-# CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+# Comando para ejecutar la aplicación usando el script python modificado
 CMD ["python", "app.py"]

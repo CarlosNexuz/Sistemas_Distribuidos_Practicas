@@ -12,7 +12,8 @@ api = Api(app)
 db_user = os.environ.get('DB_USER', 'postgres')
 db_password = os.environ.get('DB_PASSWORD', 'password')
 db_name = os.environ.get('DB_NAME', 'medical_agenda')
-# El 'Instance Connection Name' se obtiene de la consola de GCP (ej: project:region:instance)
+
+# El 'Instance Connection Name' se obtiene de la variable de entorno
 db_connection_name = os.environ.get('INSTANCE_CONNECTION_NAME')
 
 if db_connection_name:
@@ -21,7 +22,6 @@ if db_connection_name:
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://{db_user}:{db_password}@/{db_name}?host={socket_path}'
 else:
     # Configuración para Local/Testing (usando TCP)
-    # Si no hay connection name, asume local o docker-compose con host explícito
     db_host = os.environ.get('DB_HOST', 'localhost')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}/{db_name}'
 
@@ -64,7 +64,7 @@ class AppointmentResource(Resource):
         if not data:
             return {'message': 'No input data provided'}, 400
         
-        # Validaciones básicas de formato de fecha/hora si se proporcionan
+        # Validaciones básicas de formato de fecha/hora
         if 'date' in data:
             try:
                 datetime.strptime(data['date'], '%Y-%m-%d')
@@ -103,7 +103,6 @@ class AppointmentListResource(Resource):
         if not data or not all(k in data for k in ('patient_id', 'doctor_id', 'date', 'time')):
             return {'message': 'Missing required fields: patient_id, doctor_id, date, time'}, 400
         
-        # Validaciones de formato de fecha/hora
         try:
             datetime.strptime(data['date'], '%Y-%m-%d')
         except ValueError:
@@ -129,7 +128,6 @@ class AppointmentListResource(Resource):
 api.add_resource(AppointmentListResource, '/appointments', '/appointments/')
 api.add_resource(AppointmentResource, '/appointments/<int:appointment_id>')
 
-# Crear las tablas de la base de datos si no existen
 @app.before_request
 def create_tables():
     with app.app_context():
@@ -140,7 +138,7 @@ if __name__ == '__main__':
         db.create_all()
     
     # --- INICIO MODIFICACIÓN CLOUD ---
-    # Usar el puerto definido por la variable de entorno PORT (Cloud Run usa 8080 por defecto)
+    # Usar el puerto definido por la variable de entorno PORT
     port = int(os.environ.get('PORT', 8080))
     app.run(debug=True, host='0.0.0.0', port=port)
     # --- FIN MODIFICACIÓN CLOUD ---
