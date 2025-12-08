@@ -11,7 +11,8 @@ api = Api(app)
 db_user = os.environ.get('DB_USER', 'postgres')
 db_password = os.environ.get('DB_PASSWORD', 'password')
 db_name = os.environ.get('DB_NAME', 'medical_agenda')
-# El 'Instance Connection Name' se obtiene de la consola de GCP (ej: project:region:instance)
+
+# El 'Instance Connection Name' se obtiene de la variable de entorno
 db_connection_name = os.environ.get('INSTANCE_CONNECTION_NAME')
 
 if db_connection_name:
@@ -20,7 +21,6 @@ if db_connection_name:
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://{db_user}:{db_password}@/{db_name}?host={socket_path}'
 else:
     # Configuración para Local/Testing (usando TCP)
-    # Si no hay connection name, asume local o docker-compose con host explícito
     db_host = os.environ.get('DB_HOST', 'localhost')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}/{db_name}'
 
@@ -86,8 +86,6 @@ class PatientListResource(Resource):
 api.add_resource(PatientListResource, '/patients','/patients/')
 api.add_resource(PatientResource, '/patients/<int:patient_id>')
 
-# Crear la base de datos si no existe
-# Esto es importante para la primera vez que se ejecutan los servicios
 @app.before_request
 def create_tables():
     with app.app_context():
