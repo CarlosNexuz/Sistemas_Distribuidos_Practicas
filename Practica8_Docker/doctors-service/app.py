@@ -11,7 +11,8 @@ api = Api(app)
 db_user = os.environ.get('DB_USER', 'postgres')
 db_password = os.environ.get('DB_PASSWORD', 'password')
 db_name = os.environ.get('DB_NAME', 'medical_agenda')
-# El 'Instance Connection Name' se obtiene de la consola de GCP (ej: project:region:instance)
+
+# El 'Instance Connection Name' se obtiene de la variable de entorno
 db_connection_name = os.environ.get('INSTANCE_CONNECTION_NAME')
 
 if db_connection_name:
@@ -20,7 +21,6 @@ if db_connection_name:
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://{db_user}:{db_password}@/{db_name}?host={socket_path}'
 else:
     # Configuración para Local/Testing (usando TCP)
-    # Si no hay connection name, asume local o docker-compose con host explícito
     db_host = os.environ.get('DB_HOST', 'localhost')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}/{db_name}'
 
@@ -34,8 +34,8 @@ class Doctor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     specialty = db.Column(db.String(80), nullable=False)
-    # Ejemplo de disponibilidad, puedes expandir esto a una tabla separada si es más complejo
-    availability = db.Column(db.String(255)) # Ej. "Lunes 9-17, Martes 9-13"
+    # Ejemplo de disponibilidad
+    availability = db.Column(db.String(255)) 
 
     def __repr__(self):
         return '<Doctor %r>' % self.name
@@ -71,7 +71,7 @@ class DoctorResource(Resource):
         doctor = Doctor.query.get_or_404(doctor_id)
         db.session.delete(doctor)
         db.session.commit()
-        return {'message': 'Doctor deleted'}, 204 # 204 No Content
+        return {'message': 'Doctor deleted'}, 204
 
 # API Resource para Listar y Crear Doctores (GET, POST)
 class DoctorListResource(Resource):
@@ -91,7 +91,7 @@ class DoctorListResource(Resource):
         )
         db.session.add(new_doctor)
         db.session.commit()
-        return new_doctor.to_dict(), 201 # 201 Created
+        return new_doctor.to_dict(), 201
 
 # Añadir recursos a la API
 api.add_resource(DoctorListResource, '/doctors','/doctors/')
@@ -107,7 +107,7 @@ if __name__ == '__main__':
         db.create_all()
     
     # --- INICIO MODIFICACIÓN CLOUD ---
-    # Usar el puerto definido por la variable de entorno PORT (Cloud Run usa 8080 por defecto)
+    # Usar el puerto definido por la variable de entorno PORT
     port = int(os.environ.get('PORT', 8080))
     app.run(debug=True, host='0.0.0.0', port=port)
     # --- FIN MODIFICACIÓN CLOUD ---
